@@ -5,3 +5,10 @@
   - color green = many efforts before someone catches you
   - color gray = lost LL
   - later: another screen showing ones you are getting close to
+
+
+## domain:
+- llegend.io
+- llegend.co
+- llegends.io
+- llegend.com (2500)

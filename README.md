@@ -518,3 +518,24 @@ which will give you something like this if you are the LL (see histogram):
     }
 ]
 ```
+
+It looks like it will be difficult to determine which segments the user is KOM of. There is possibly this approach:
+https://groups.google.com/g/strava-api/c/FNJSLI_HvLA/m/IsCbOxbyBwAJ
+`curl https://www.strava.com/api/v3/athletes/2021127/koms`
+however, it may be that it only shows LL of segments a person has created. If that's true, we will need to fallback to
+looking through all segments they have starred, and then checking the LL.
+
+`curl https://www.strava.com/api/v3/segments/starred`
+
+In the response you get this, notice the is_kom field:
+```
+"athlete_pr_effort": {
+            "id": 2941548630396809328,
+            "activity_id": 6867780040,
+            "elapsed_time": 145,
+            "distance": 1485.64,
+            "start_date": "2022-03-23T00:23:55Z",
+            "start_date_local": "2022-03-22T17:23:55Z",
+            "is_kom": false
+        },
+```

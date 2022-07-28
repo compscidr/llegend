@@ -57,6 +57,8 @@ Then browse to http://localhost:8080
 
 - Create periodic task to refresh data
 - Notify via email or something if about to lose LL
+- Tests
+- Spruce up the UI
 
 ## inspiration projects
 http://www.raceleap.live/

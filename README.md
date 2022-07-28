@@ -33,8 +33,8 @@ Then browse to http://localhost:8080
 
 ## What works
 - Can get starred segments for the user and determine whether or not local legend
-![screenshot of what works](screenshot.png)
 
+![screenshot of what works](screenshot.png)
 
 ## Todo
 

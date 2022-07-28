@@ -11,6 +11,9 @@ WiP, but goal is:
 There are two necessary environment variables to run. The first is the access
 token for the strava API, and the second is the athlete ID.
 
+You can get a strava API token by creating an app here: https://www.strava.com/settings/api
+And you get the athlete id from your strave profile page (its at the end of the URL)
+
 These can be set via `.env` file for docker and docker-compose, otherwise
 they can be passed in via the command to run the program:
 

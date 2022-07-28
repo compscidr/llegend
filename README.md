@@ -13,6 +13,17 @@
 - llegend.com (2500)
 
 
+## login
+initially, we won't do user login, so everything will operate on the user
+with the developer token, rather than the "logged_in" user. Eventually we'll
+need to do oauth and login with the user's strava account to make this useful.
+
+## cron job
+In order to save on traffic, the LL segments should be loaded once per session
+and then periodically the ones which people are LL of should be queried in
+a cron job. If the histogram is getting within some threshold an alert can
+be sent out.
+
 ## requests:
 curl: https://www.strava.com/api/v3/segments/19209251/local_legend
 which will give you something like this if you are the LL (see histogram):

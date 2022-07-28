@@ -31,6 +31,33 @@ docker run -p 8080:8080 --env-file .env llegend
 
 Then browse to http://localhost:8080
 
+## What works
+- Can get starred segments for the user and determine whether or not local legend
+![screenshot of what works](screenshot.png)
+
+
+## Todo
+
+- Add map data for segment to data structure we return to template
+- Integrate some type of map API
+- Plot segments on map
+
+- For segments which we are LL for:
+  - Determine our current efforts in past 90 days from histogram
+  - Determine next nearest total from past 90 days from histogram
+  - Add difference score to data structure we return to template
+  - Plot map with colors corresponding to difference score
+
+- For segments which we are not LL for:
+  - Determine our current efforts in past 90 days from results
+  - Determine the current leaders 90 day effort
+  - Determine difference score
+  - Plot map with colors corresponding to difference score
+    - distinguish between those we are LL of and those we could become
+
+- Create periodic task to refresh data
+- Notify via email or something if about to lose LL
+
 ## inspiration projects
 http://www.raceleap.live/
 https://stravanity.vercel.app/

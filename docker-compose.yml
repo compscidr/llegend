@@ -1,0 +1,11 @@
+version: "3.0"
+services:
+  llegend:
+    build:
+      context: .
+    container_name: llegend
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "8080:8080"

@@ -6,7 +6,31 @@
   - color gray = lost LL
   - later: another screen showing ones you are getting close to
 
-## domain:
+## building and running
+There are two necessary environment variables to run. The first is the access
+token for the strava API, and the second is the athlete ID.
+
+These can be set via `.env` file for docker and docker-compose, otherwise
+they can be passed in via the command to run the program:
+
+### locally
+```
+go build
+ACCESS_TOKEN=<insert> ATHLETE=<insert> ./llegend 
+```
+
+### docker
+```
+docker build -f Dockerfile . -t llegend
+docker run -p 8080:8080 --env-file .env llegend
+```
+
+### docker-compose
+`docker-compose up --build`
+
+Then browse to http://localhost:8080
+
+## domains
 - llegend.io
 - llegend.co
 - llegends.io

@@ -8,8 +8,13 @@ WiP, but goal is:
   - later: show segments you are getting close to being LL for with similar color coding
 
 ## building and running
-There are two necessary environment variables to run. The first is the access
-token for the strava API, and the second is the athlete ID.
+There are three necessary environment variables to run. The first is the access
+token for the strava API, the second is the athlete ID, the third is the google maps API key.
+```
+ACCESS_TOKEN=
+ATHLETE=
+GMAPS=
+```
 
 You can get a strava API token by creating an app here: https://www.strava.com/settings/api
 And you get the athlete id from your strave profile page (its at the end of the URL)

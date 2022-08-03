@@ -23,23 +23,26 @@ func main() {
 func handler(c *gin.Context) {
 	apiKey := os.Getenv("ACCESS_TOKEN")
 	athleteID, _ := strconv.Atoi(os.Getenv("ATHLETE"))
+	mapsKey := os.Getenv("GMAPS")
 
 	log.Println("Using apiKey " + apiKey + " athleteID: " + strconv.Itoa(athleteID))
 
 	segments := getLLSegments(apiKey, athleteID)
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"segments": segments,
+		"gmaps":    mapsKey,
 	})
 }
 
 type SegmentData struct {
-	ID int
-	LL bool
+	ID          int
+	LL          bool
+	EffortsAway int // if LL = true, efforts for someone to catch-up, otherwise, efforts to become
 }
 
 // got this from getting the response, turning it into a string, and then pasting into here: https://mholt.github.io/json-to-go/
 // guide from: https://dev.to/billylkc/parse-json-api-response-in-go-10ng
-type SegmentResponse []struct {
+type StarredSegmentResponse []struct {
 	ID               int         `json:"id"`
 	ResourceState    int         `json:"resource_state"`
 	Name             string      `json:"name"`
@@ -75,29 +78,26 @@ type SegmentResponse []struct {
 func getLLSegments(apiKey string, atheleteID int) []SegmentData {
 	var segments []SegmentData
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://www.strava.com/api/v3/segments/starred", nil)
+	req, _ := http.NewRequest("GET", "https://www.strava.com/api/v3/segments/starred?page=1&per_page=2", nil)
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	res, _ := client.Do(req)
 	body, _ := ioutil.ReadAll(res.Body)
 
-	var results SegmentResponse
+	var results StarredSegmentResponse
 	if err := json.Unmarshal(body, &results); err != nil { // Parse []byte to the go struct pointer
 		fmt.Println("Can not unmarshal JSON")
 	}
 
 	// Loop through all the segments and extract their IDs
 	for _, result := range results {
-		segment := SegmentData{
-			result.ID,
-			isLocalLegend(apiKey, result.ID, atheleteID),
-		}
+		segment := getSegmentData(apiKey, result.ID, atheleteID)
 		segments = append(segments, segment)
 	}
 
 	return segments
 }
 
-type LocalLegendResponse []struct {
+type DetailedSegmentResponse []struct {
 	Category         string `json:"category"`
 	AnalyticsContext struct {
 		SegmentID                 int    `json:"segment_id"`
@@ -245,17 +245,34 @@ type LocalLegendResponse []struct {
 	} `json:"opt_in"`
 }
 
-func isLocalLegend(apiKey string, segmentID int, athleteID int) bool {
+func getSegmentData(apiKey string, segmentID int, athleteID int) SegmentData {
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", "https://www.strava.com/api/v3/segments/"+strconv.Itoa(segmentID)+"/local_legend", nil)
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	res, _ := client.Do(req)
 	body, _ := ioutil.ReadAll(res.Body)
 
-	var results LocalLegendResponse
+	var results DetailedSegmentResponse
 	if err := json.Unmarshal(body, &results); err != nil { // Parse []byte to the go struct pointer
 		fmt.Println("Can not unmarshal JSON")
 	}
 
-	return results[0].LocalLegend.AthleteID == athleteID
+	isLL := results[0].LocalLegend.AthleteID == athleteID
+	fmt.Println("LL: " + strconv.Itoa(results[0].LocalLegend.AthleteID))
+	effortDiff := 0
+	if isLL {
+		totalEfforts, _ := strconv.Atoi(results[0].YourEfforts.TotalEfforts)
+		effortDiff = totalEfforts - results[0].LocalLegend.MayorEffortCount
+		fmt.Println("My efforts: " + strconv.Itoa(totalEfforts) + " Best efforts: " + strconv.Itoa(results[0].LocalLegend.MayorEffortCount) + " Diff: " + strconv.Itoa(effortDiff))
+	} else {
+		totalEfforts, _ := strconv.Atoi(results[0].YourEfforts.TotalEfforts)
+		effortDiff = results[0].LocalLegend.MayorEffortCount - totalEfforts
+		fmt.Println("My efforts: " + strconv.Itoa(totalEfforts) + " Best efforts: " + strconv.Itoa(results[0].LocalLegend.MayorEffortCount) + " Diff: " + strconv.Itoa(effortDiff))
+	}
+
+	return SegmentData{
+		segmentID,
+		isLL,
+		effortDiff,
+	}
 }

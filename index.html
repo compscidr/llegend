@@ -20,7 +20,7 @@
 <body>
     {{ range .segments }}
     <div>
-        {{ .ID }} IS LL? {{ .LL }} {{ .EffortsAway }}
+        {{ .ID }} IS LL? {{ .LL }} {{ .EffortsAway }} {{ .LatLng }}
     </div>
     {{ end }}
     <div id="map"></div>
@@ -28,9 +28,18 @@
         var map;
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: -34.397, lng: 150.644},
-                zoom: 8
+                center: {lat: {{ index (index ((index .segments 0).LatLng) 0) 0 }}, lng: {{ index (index ((index .segments 0).LatLng) 0) 1 }}},
+                zoom: 14
             });
+
+            {{- range $index,$value := .segments -}}
+
+            const segmentCoordinates{{- $index -}}=[
+                {{- range $value.LatLng -}}
+                { lat: {{- index . 0 -}}, lng: {{- index . 1 -}} },
+                {{- end -}}
+            ];
+            {{- end -}}
         }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ .gmaps }}&callback=initMap"

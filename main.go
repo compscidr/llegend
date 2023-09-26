@@ -38,6 +38,7 @@ type SegmentData struct {
 	ID          int
 	LL          bool
 	EffortsAway int // if LL = true, efforts for someone to catch-up, otherwise, efforts to become
+	LatLng      [][]float64
 }
 
 // got this from getting the response, turning it into a string, and then pasting into here: https://mholt.github.io/json-to-go/
@@ -274,5 +275,6 @@ func getSegmentData(apiKey string, segmentID int, athleteID int) SegmentData {
 		segmentID,
 		isLL,
 		effortDiff,
+		results[0].Segment.Map.LatLng,
 	}
 }

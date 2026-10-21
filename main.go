@@ -34,6 +34,8 @@ func handler(c *gin.Context) {
 	})
 }
 
+var stravaAPI = "https://www.strava.com/api/v3"
+
 type SegmentData struct {
 	ID          int
 	LL          bool
@@ -78,7 +80,7 @@ type StarredSegmentResponse []struct {
 func getLLSegments(apiKey string, atheleteID int) []SegmentData {
 	var segments []SegmentData
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://www.strava.com/api/v3/segments/starred?page=1&per_page=2", nil)
+	req, _ := http.NewRequest("GET", stravaAPI+"/segments/starred?page=1&per_page=2", nil)
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	res, _ := client.Do(req)
 	body, _ := ioutil.ReadAll(res.Body)
@@ -247,7 +249,7 @@ type DetailedSegmentResponse []struct {
 
 func getSegmentData(apiKey string, segmentID int, athleteID int) SegmentData {
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://www.strava.com/api/v3/segments/"+strconv.Itoa(segmentID)+"/local_legend", nil)
+	req, _ := http.NewRequest("GET", stravaAPI+"/segments/"+strconv.Itoa(segmentID)+"/local_legend", nil)
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	res, _ := client.Do(req)
 	body, _ := ioutil.ReadAll(res.Body)
